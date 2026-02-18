@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid Link</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #0b0d11;
+            color: #e2e4ea;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: #12151c;
+            border: 1px solid #242938;
+            border-radius: 20px;
+            padding: 48px 40px;
+            max-width: 400px;
+            text-align: center;
+        }
+        .icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(240, 78, 94, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .icon svg { color: #f04e5e; width: 28px; height: 28px; }
+        h1 { font-size: 20px; margin-bottom: 10px; }
+        p { color: #7a7f92; font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+        </div>
+        <h1>Invalid Link</h1>
+        <p>{{ message }}</p>
+    </div>
+</body>
+</html>

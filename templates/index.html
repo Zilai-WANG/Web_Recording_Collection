@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Capture — Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0b0d11;
+            --surface: #12151c;
+            --surface2: #1a1e28;
+            --border: #242938;
+            --text: #e2e4ea;
+            --text-dim: #7a7f92;
+            --accent: #22d67a;
+            --accent-dim: rgba(34, 214, 122, 0.12);
+            --red: #f04e5e;
+            --red-dim: rgba(240, 78, 94, 0.12);
+            --amber: #f0a030;
+            --amber-dim: rgba(240, 160, 48, 0.12);
+            --font: 'DM Sans', -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grid pattern bg */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(34, 214, 122, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 214, 122, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        header {
+            margin-bottom: 48px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg { width: 20px; height: 20px; }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-dim);
+            font-size: 14px;
+            margin-top: 4px;
+            margin-left: 48px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+        }
+
+        /* Form */
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+        }
+
+        textarea {
+            font-family: var(--mono);
+            font-size: 13px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #0b0d11;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.12);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--text-dim);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        /* Generated links */
+        .links-output {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .links-output.show { display: block; }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--surface2);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .link-item .meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .link-item .name { font-weight: 600; }
+        .link-item .email { color: var(--text-dim); font-size: 12px; }
+
+        .link-item code {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--accent);
+            background: var(--accent-dim);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .link-item code:hover {
+            background: rgba(34, 214, 122, 0.22);
+        }
+
+        /* Tables */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            text-align: left;
+            padding: 8px 12px;
+            color: var(--text-dim);
+            font-weight: 500;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-green { background: var(--accent-dim); color: var(--accent); }
+        .badge-amber { background: var(--amber-dim); color: var(--amber); }
+        .badge-red { background: var(--red-dim); color: var(--red); }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+
+        .file-size {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        /* Refresh */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            transition: color 0.2s;
+        }
+
+        .refresh-btn:hover { color: var(--accent); }
+
+        .refresh-btn svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.4s;
+        }
+
+        .refresh-btn.spinning svg { transform: rotate(360deg); }
+
+        @media (max-width: 640px) {
+            .form-row { flex-direction: column; }
+            .container { padding: 24px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0b0d11" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                    </svg>
+                </div>
+                <h1>Audio Capture</h1>
+            </div>
+            <p>Generate participant links and monitor recording sessions</p>
+        </header>
+
+        <!-- Create Session -->
+        <div class="card">
+            <h2>Create Session</h2>
+            <div class="form-row">
+                <div style="flex:1">
+                    <label>Session Name</label>
+                    <input type="text" id="sessionName" placeholder="e.g. Weekly Standup — Feb 17">
+                </div>
+            </div>
+            <div>
+                <label>Participants (one per line: email, display name)</label>
+                <textarea id="participants" placeholder="alice@example.com, Alice&#10;bob@example.com, Bob&#10;carol@example.com"></textarea>
+                <div class="hint">Name is optional. If omitted, the part before @ is used.</div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="createSession()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Generate Links
+                </button>
+            </div>
+
+            <div class="links-output" id="linksOutput">
+                <h2>Participant Links</h2>
+                <div id="linksList"></div>
+            </div>
+        </div>
+
+        <!-- Active Sessions -->
+        <div class="card">
+            <div class="section-header">
+                <h2 style="margin-bottom:0">Active Recordings</h2>
+                <button class="refresh-btn" onclick="refreshActive(this)" title="Refresh">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Participant</th><th>Session</th><th>Chunks</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="activeBody">
+                        <tr><td colspan="4" class="empty-state">No active recordings</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Saved Recordings -->
+        <div class="card">
+            <div class="section-header">
+                <h2 style="margin-bottom:0">Saved Recordings</h2>
+                <button class="refresh-btn" onclick="refreshRecordings(this)" title="Refresh">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Filename</th><th>Size</th><th>Created</th></tr>
+                    </thead>
+                    <tbody id="recordingsBody">
+                        <tr><td colspan="3" class="empty-state">No recordings yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE = window.location.origin;
+
+        async function createSession() {
+            const sessionName = document.getElementById('sessionName').value.trim() || 'Untitled Session';
+            const raw = document.getElementById('participants').value.trim();
+            if (!raw) return alert('Please enter at least one participant email.');
+
+            const participants = raw.split('\n').filter(l => l.trim()).map(line => {
+                const parts = line.split(',').map(s => s.trim());
+                return { email: parts[0], name: parts[1] || null, session_name: sessionName };
+            });
+
+            const res = await fetch('/api/sessions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_name: sessionName, participants }),
+            });
+            const data = await res.json();
+
+            const list = document.getElementById('linksList');
+            list.innerHTML = '';
+            data.participants.forEach(p => {
+                const fullLink = `${BASE}${p.link}`;
+                const div = document.createElement('div');
+                div.className = 'link-item';
+                div.innerHTML = `
+                    <div class="meta">
+                        <span class="name">${p.name || p.email}</span>
+                        <span class="email">${p.email}</span>
+                    </div>
+                    <code onclick="navigator.clipboard.writeText('${fullLink}');this.textContent='Copied!';setTimeout(()=>this.textContent='${fullLink}',1500)">${fullLink}</code>
+                `;
+                list.appendChild(div);
+            });
+            document.getElementById('linksOutput').classList.add('show');
+        }
+
+        async function refreshActive(btn) {
+            btn.classList.add('spinning');
+            setTimeout(() => btn.classList.remove('spinning'), 500);
+
+            const res = await fetch('/api/active');
+            const data = await res.json();
+            const tbody = document.getElementById('activeBody');
+
+            if (!data.active.length) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No active recordings</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.active.map(s => `
+                <tr>
+                    <td><strong>${s.name}</strong><br><span style="color:var(--text-dim);font-size:12px">${s.email}</span></td>
+                    <td>${s.session_name}</td>
+                    <td><span class="file-size">${s.chunks}</span></td>
+                    <td><span class="badge badge-green">● Recording</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function refreshRecordings(btn) {
+            btn.classList.add('spinning');
+            setTimeout(() => btn.classList.remove('spinning'), 500);
+
+            const res = await fetch('/api/recordings');
+            const data = await res.json();
+            const tbody = document.getElementById('recordingsBody');
+
+            if (!data.recordings.length) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No recordings yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.recordings.map(r => {
+                const size = r.size_bytes > 1048576
+                    ? (r.size_bytes / 1048576).toFixed(1) + ' MB'
+                    : (r.size_bytes / 1024).toFixed(0) + ' KB';
+                const date = new Date(r.created).toLocaleString();
+                return `
+                    <tr>
+                        <td style="font-family:var(--mono);font-size:12px">${r.filename}</td>
+                        <td><span class="file-size">${size}</span></td>
+                        <td style="color:var(--text-dim);font-size:13px">${date}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Auto-refresh
+        setInterval(() => {
+            refreshActive(document.querySelector('.card:nth-child(2) .refresh-btn'));
+            refreshRecordings(document.querySelector('.card:nth-child(3) .refresh-btn'));
+        }, 10000);
+
+        // Initial load
+        refreshActive(document.querySelector('.card:nth-child(2) .refresh-btn'));
+        refreshRecordings(document.querySelector('.card:nth-child(3) .refresh-btn'));
+    </script>
+</body>
+</html>
