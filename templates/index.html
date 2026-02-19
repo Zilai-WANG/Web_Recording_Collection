@@ -18,6 +18,8 @@
             --text-dim: #7a7f92;
             --accent: #22d67a;
             --accent-dim: rgba(34, 214, 122, 0.12);
+            --blue: #4ea4f0;
+            --blue-dim: rgba(78, 164, 240, 0.12);
             --red: #f04e5e;
             --red-dim: rgba(240, 78, 94, 0.12);
             --amber: #f0a030;
@@ -34,7 +36,6 @@
             overflow-x: hidden;
         }
 
-        /* Subtle grid pattern bg */
         body::before {
             content: '';
             position: fixed;
@@ -50,14 +51,12 @@
         .container {
             position: relative;
             z-index: 1;
-            max-width: 960px;
+            max-width: 1020px;
             margin: 0 auto;
             padding: 48px 24px;
         }
 
-        header {
-            margin-bottom: 48px;
-        }
+        header { margin-bottom: 48px; }
 
         .logo {
             display: flex;
@@ -78,11 +77,7 @@
 
         .logo-icon svg { width: 20px; height: 20px; }
 
-        h1 {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
+        h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
 
         header p {
             color: var(--text-dim);
@@ -107,6 +102,13 @@
             letter-spacing: 1.2px;
             color: var(--text-dim);
             margin-bottom: 20px;
+        }
+
+        /* Two-column layout for top cards */
+        .top-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
         }
 
         /* Form */
@@ -137,9 +139,7 @@
             transition: border-color 0.2s;
         }
 
-        input:focus, textarea:focus {
-            border-color: var(--accent);
-        }
+        input:focus, textarea:focus { border-color: var(--accent); }
 
         textarea {
             font-family: var(--mono);
@@ -152,6 +152,52 @@
             font-size: 11px;
             color: var(--text-dim);
             margin-top: 4px;
+        }
+
+        /* Toggle switch */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            margin-bottom: 4px;
+        }
+
+        .toggle-row label { margin-bottom: 0; cursor: pointer; }
+
+        .toggle {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            transition: all 0.2s;
+        }
+
+        .toggle:checked {
+            background: var(--accent-dim);
+            border-color: var(--accent);
+        }
+
+        .toggle:checked::after {
+            left: 20px;
+            background: var(--accent);
         }
 
         .btn {
@@ -168,24 +214,27 @@
             transition: all 0.2s;
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: #0b0d11;
-        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .btn-primary:hover {
-            filter: brightness(1.12);
-            transform: translateY(-1px);
-        }
+        .btn-primary { background: var(--accent); color: #0b0d11; }
+        .btn-primary:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
+
+        .btn-blue { background: var(--blue); color: #fff; }
+        .btn-blue:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
 
         .btn-ghost {
             background: var(--surface2);
             color: var(--text);
             border: 1px solid var(--border);
+            padding: 6px 14px;
+            font-size: 12px;
         }
+        .btn-ghost:hover { border-color: var(--text-dim); }
 
-        .btn-ghost:hover {
-            border-color: var(--text-dim);
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+            border-radius: 6px;
         }
 
         .btn-row {
@@ -194,7 +243,7 @@
             margin-top: 16px;
         }
 
-        /* Generated links */
+        /* Links output */
         .links-output {
             display: none;
             margin-top: 20px;
@@ -213,42 +262,83 @@
             border-radius: 8px;
             margin-bottom: 8px;
             font-size: 13px;
+            gap: 12px;
         }
 
         .link-item .meta {
             display: flex;
             flex-direction: column;
             gap: 2px;
+            min-width: 0;
         }
 
         .link-item .name { font-weight: 600; }
-        .link-item .email { color: var(--text-dim); font-size: 12px; }
+        .link-item .email-label { color: var(--text-dim); font-size: 12px; }
+
+        .link-item .link-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
 
         .link-item code {
             font-family: var(--mono);
-            font-size: 12px;
+            font-size: 11px;
             color: var(--accent);
             background: var(--accent-dim);
             padding: 4px 10px;
             border-radius: 6px;
             cursor: pointer;
             transition: background 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 280px;
         }
 
-        .link-item code:hover {
-            background: rgba(34, 214, 122, 0.22);
+        .link-item code:hover { background: rgba(34, 214, 122, 0.22); }
+
+        .email-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
         }
+
+        .email-sent { background: var(--accent-dim); color: var(--accent); }
+        .email-skipped { background: var(--amber-dim); color: var(--amber); }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-color: var(--accent); }
+        .toast.error { border-color: var(--red); }
 
         /* Tables */
-        .table-wrap {
-            overflow-x: auto;
-        }
+        .table-wrap { overflow-x: auto; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
 
         th {
             text-align: left;
@@ -264,21 +354,27 @@
         td {
             padding: 10px 12px;
             border-bottom: 1px solid var(--border);
+            vertical-align: middle;
         }
 
         tr:last-child td { border-bottom: none; }
 
         .badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
             padding: 3px 10px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .badge-green { background: var(--accent-dim); color: var(--accent); }
         .badge-amber { background: var(--amber-dim); color: var(--amber); }
         .badge-red { background: var(--red-dim); color: var(--red); }
+        .badge-blue { background: var(--blue-dim); color: var(--blue); }
+        .badge-dim { background: rgba(122,127,146,0.1); color: var(--text-dim); }
 
         .empty-state {
             text-align: center;
@@ -293,7 +389,6 @@
             color: var(--text-dim);
         }
 
-        /* Refresh */
         .section-header {
             display: flex;
             align-items: center;
@@ -311,16 +406,30 @@
         }
 
         .refresh-btn:hover { color: var(--accent); }
-
-        .refresh-btn svg {
-            width: 16px;
-            height: 16px;
-            transition: transform 0.4s;
-        }
-
+        .refresh-btn svg { width: 16px; height: 16px; transition: transform 0.4s; }
         .refresh-btn.spinning svg { transform: rotate(360deg); }
 
-        @media (max-width: 640px) {
+        .download-link {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .download-link:hover { color: #7abef5; }
+
+        .duration {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 768px) {
+            .top-row { grid-template-columns: 1fr; }
             .form-row { flex-direction: column; }
             .container { padding: 24px 16px; }
         }
@@ -339,37 +448,100 @@
                 </div>
                 <h1>Audio Capture</h1>
             </div>
-            <p>Generate participant links and monitor recording sessions</p>
+            <p>Generate participant links, send email invites, and manage recordings</p>
         </header>
 
-        <!-- Create Session -->
-        <div class="card">
-            <h2>Create Session</h2>
-            <div class="form-row">
-                <div style="flex:1">
+        <div class="top-row">
+            <!-- Quick Invite -->
+            <div class="card">
+                <h2>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px; margin-right:6px;">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    Quick Email Invite
+                </h2>
+                <div style="margin-bottom: 12px">
+                    <label>Email Address</label>
+                    <input type="email" id="inviteEmail" placeholder="participant@example.com">
+                </div>
+                <div class="form-row">
+                    <div style="flex:1">
+                        <label>Display Name <span style="color:var(--text-dim)">(optional)</span></label>
+                        <input type="text" id="inviteName" placeholder="Alice">
+                    </div>
+                    <div style="flex:1">
+                        <label>Session Name</label>
+                        <input type="text" id="inviteSession" placeholder="Weekly Standup">
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-blue" onclick="sendQuickInvite()" id="btnInvite">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        Send Invite
+                    </button>
+                </div>
+                <div class="hint" id="inviteHint" style="margin-top:8px"></div>
+            </div>
+
+            <!-- Batch Session -->
+            <div class="card">
+                <h2>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px; margin-right:6px;">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+                    </svg>
+                    Batch Session
+                </h2>
+                <div style="margin-bottom: 12px">
                     <label>Session Name</label>
                     <input type="text" id="sessionName" placeholder="e.g. Weekly Standup — Feb 17">
                 </div>
-            </div>
-            <div>
-                <label>Participants (one per line: email, display name)</label>
-                <textarea id="participants" placeholder="alice@example.com, Alice&#10;bob@example.com, Bob&#10;carol@example.com"></textarea>
-                <div class="hint">Name is optional. If omitted, the part before @ is used.</div>
-            </div>
-            <div class="btn-row">
-                <button class="btn btn-primary" onclick="createSession()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Generate Links
-                </button>
-            </div>
+                <div>
+                    <label>Participants (one per line: email, name)</label>
+                    <textarea id="participants" placeholder="alice@example.com, Alice&#10;bob@example.com, Bob&#10;carol@example.com"></textarea>
+                    <div class="hint">Name is optional. If omitted, the part before @ is used.</div>
+                </div>
+                <div class="toggle-row">
+                    <input type="checkbox" class="toggle" id="sendEmails">
+                    <label for="sendEmails">Send email invites automatically</label>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-primary" onclick="createSession()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Generate Links
+                    </button>
+                </div>
 
-            <div class="links-output" id="linksOutput">
-                <h2>Participant Links</h2>
-                <div id="linksList"></div>
+                <div class="links-output" id="linksOutput">
+                    <h2>Participant Links</h2>
+                    <div id="linksList"></div>
+                </div>
             </div>
         </div>
 
-        <!-- Active Sessions -->
+        <!-- Participant Status -->
+        <div class="card">
+            <div class="section-header">
+                <h2 style="margin-bottom:0">Participant Status</h2>
+                <button class="refresh-btn" onclick="refreshTokens(this)" title="Refresh">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Participant</th><th>Session</th><th>Status</th><th>Email</th><th>Expires</th></tr>
+                    </thead>
+                    <tbody id="tokensBody">
+                        <tr><td colspan="5" class="empty-state">No invites yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Active Recordings -->
         <div class="card">
             <div class="section-header">
                 <h2 style="margin-bottom:0">Active Recordings</h2>
@@ -406,24 +578,81 @@
             <div class="table-wrap">
                 <table>
                     <thead>
-                        <tr><th>Filename</th><th>Size</th><th>Created</th></tr>
+                        <tr><th>Participant</th><th>Session</th><th>Duration</th><th>Size</th><th>Date</th><th>Download</th></tr>
                     </thead>
                     <tbody id="recordingsBody">
-                        <tr><td colspan="3" class="empty-state">No recordings yet</td></tr>
+                        <tr><td colspan="6" class="empty-state">No recordings yet</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
     <script>
         const BASE = window.location.origin;
 
+        // ── Toast ──────────────────────────────────────────
+        function showToast(message, type = 'success') {
+            const t = document.getElementById('toast');
+            t.className = `toast ${type}`;
+            const icon = type === 'success' ? '&#10003;' : '&#10007;';
+            t.innerHTML = `<span style="color:var(--${type === 'success' ? 'accent' : 'red'})">${icon}</span> ${message}`;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3500);
+        }
+
+        // ── Quick Invite ───────────────────────────────────
+        async function sendQuickInvite() {
+            const email = document.getElementById('inviteEmail').value.trim();
+            if (!email) return showToast('Please enter an email address', 'error');
+
+            const name = document.getElementById('inviteName').value.trim() || null;
+            const session = document.getElementById('inviteSession').value.trim() || 'Recording Session';
+
+            const btn = document.getElementById('btnInvite');
+            btn.disabled = true;
+            btn.innerHTML = 'Sending...';
+
+            try {
+                const res = await fetch('/api/invite', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, name, session_name: session }),
+                });
+                const data = await res.json();
+
+                const hint = document.getElementById('inviteHint');
+                if (data.email_sent) {
+                    showToast(`Invite sent to ${email}`);
+                    hint.innerHTML = `<span style="color:var(--accent)">&#10003; Email sent!</span> Link: <code style="font-family:var(--mono);font-size:11px;color:var(--accent);cursor:pointer" onclick="navigator.clipboard.writeText('${data.full_link}');showToast('Link copied!')">${data.full_link}</code>`;
+                } else if (!data.email_configured) {
+                    showToast('Link created (email not configured)', 'error');
+                    hint.innerHTML = `<span style="color:var(--amber)">&#9888; RESEND_API_KEY not set — email not sent.</span><br>Link: <code style="font-family:var(--mono);font-size:11px;color:var(--accent);cursor:pointer" onclick="navigator.clipboard.writeText('${data.full_link}');showToast('Link copied!')">${data.full_link}</code>`;
+                } else {
+                    showToast('Email failed to send', 'error');
+                    hint.innerHTML = `<span style="color:var(--red)">Email failed.</span> Link: <code style="font-family:var(--mono);font-size:11px;color:var(--accent);cursor:pointer" onclick="navigator.clipboard.writeText('${data.full_link}');showToast('Link copied!')">${data.full_link}</code>`;
+                }
+
+                document.getElementById('inviteEmail').value = '';
+                document.getElementById('inviteName').value = '';
+                refreshTokens(document.querySelector('.card:nth-of-type(1) .refresh-btn'));
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Invite';
+        }
+
+        // ── Batch Session ──────────────────────────────────
         async function createSession() {
             const sessionName = document.getElementById('sessionName').value.trim() || 'Untitled Session';
             const raw = document.getElementById('participants').value.trim();
-            if (!raw) return alert('Please enter at least one participant email.');
+            if (!raw) return showToast('Please enter at least one participant', 'error');
 
+            const sendEmails = document.getElementById('sendEmails').checked;
             const participants = raw.split('\n').filter(l => l.trim()).map(line => {
                 const parts = line.split(',').map(s => s.trim());
                 return { email: parts[0], name: parts[1] || null, session_name: sessionName };
@@ -432,31 +661,92 @@
             const res = await fetch('/api/sessions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ session_name: sessionName, participants }),
+                body: JSON.stringify({ session_name: sessionName, participants, send_emails: sendEmails }),
             });
             const data = await res.json();
 
             const list = document.getElementById('linksList');
             list.innerHTML = '';
             data.participants.forEach(p => {
-                const fullLink = `${BASE}${p.link}`;
                 const div = document.createElement('div');
                 div.className = 'link-item';
                 div.innerHTML = `
                     <div class="meta">
                         <span class="name">${p.name || p.email}</span>
-                        <span class="email">${p.email}</span>
+                        <span class="email-label">${p.email}</span>
                     </div>
-                    <code onclick="navigator.clipboard.writeText('${fullLink}');this.textContent='Copied!';setTimeout(()=>this.textContent='${fullLink}',1500)">${fullLink}</code>
+                    <div class="link-actions">
+                        ${sendEmails
+                            ? `<span class="email-badge ${p.email_sent ? 'email-sent' : 'email-skipped'}">${p.email_sent ? 'Sent' : 'Not sent'}</span>`
+                            : ''}
+                        <code onclick="navigator.clipboard.writeText('${p.full_link}');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy link',1500)">Copy link</code>
+                    </div>
                 `;
                 list.appendChild(div);
             });
             document.getElementById('linksOutput').classList.add('show');
+
+            const sentCount = data.participants.filter(p => p.email_sent).length;
+            if (sendEmails && sentCount > 0) {
+                showToast(`Session created! ${sentCount}/${data.participants.length} emails sent`);
+            } else {
+                showToast(`Session created with ${data.participants.length} participants`);
+            }
+
+            refreshTokens(document.querySelector('.container .card:nth-of-type(1) .refresh-btn'));
         }
 
+        // ── Participant Status ─────────────────────────────
+        async function refreshTokens(btn) {
+            if (btn) {
+                btn.classList.add('spinning');
+                setTimeout(() => btn.classList.remove('spinning'), 500);
+            }
+
+            const res = await fetch('/api/tokens');
+            const data = await res.json();
+            const tbody = document.getElementById('tokensBody');
+
+            if (!data.tokens.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No invites yet</td></tr>';
+                return;
+            }
+
+            const statusBadge = (s) => {
+                switch (s) {
+                    case 'pending': return '<span class="badge badge-amber">Pending</span>';
+                    case 'recording': return '<span class="badge badge-green">&#9679; Recording</span>';
+                    case 'completed': return '<span class="badge badge-blue">Completed</span>';
+                    case 'expired': return '<span class="badge badge-red">Expired</span>';
+                    default: return '<span class="badge badge-dim">Unknown</span>';
+                }
+            };
+
+            tbody.innerHTML = data.tokens.map(t => {
+                const expires = new Date(t.expires_at);
+                const now = new Date();
+                const hoursLeft = Math.max(0, ((expires - now) / 3600000)).toFixed(1);
+                const expiryText = t.status === 'expired' || t.status === 'completed'
+                    ? '—'
+                    : `${hoursLeft}h left`;
+                return `
+                    <tr>
+                        <td><strong>${t.name}</strong><br><span style="color:var(--text-dim);font-size:12px">${t.email}</span></td>
+                        <td>${t.session_name}</td>
+                        <td>${statusBadge(t.status)}</td>
+                        <td>${t.email_sent ? '<span class="badge badge-green" style="font-size:10px">Sent</span>' : '<span class="badge badge-dim" style="font-size:10px">Not sent</span>'}</td>
+                        <td style="color:var(--text-dim);font-size:12px">${expiryText}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ── Active Sessions ────────────────────────────────
         async function refreshActive(btn) {
-            btn.classList.add('spinning');
-            setTimeout(() => btn.classList.remove('spinning'), 500);
+            if (btn) {
+                btn.classList.add('spinning');
+                setTimeout(() => btn.classList.remove('spinning'), 500);
+            }
 
             const res = await fetch('/api/active');
             const data = await res.json();
@@ -472,21 +762,24 @@
                     <td><strong>${s.name}</strong><br><span style="color:var(--text-dim);font-size:12px">${s.email}</span></td>
                     <td>${s.session_name}</td>
                     <td><span class="file-size">${s.chunks}</span></td>
-                    <td><span class="badge badge-green">● Recording</span></td>
+                    <td><span class="badge badge-green">&#9679; Recording</span></td>
                 </tr>
             `).join('');
         }
 
+        // ── Saved Recordings ───────────────────────────────
         async function refreshRecordings(btn) {
-            btn.classList.add('spinning');
-            setTimeout(() => btn.classList.remove('spinning'), 500);
+            if (btn) {
+                btn.classList.add('spinning');
+                setTimeout(() => btn.classList.remove('spinning'), 500);
+            }
 
             const res = await fetch('/api/recordings');
             const data = await res.json();
             const tbody = document.getElementById('recordingsBody');
 
             if (!data.recordings.length) {
-                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No recordings yet</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No recordings yet</td></tr>';
                 return;
             }
 
@@ -495,25 +788,38 @@
                     ? (r.size_bytes / 1048576).toFixed(1) + ' MB'
                     : (r.size_bytes / 1024).toFixed(0) + ' KB';
                 const date = new Date(r.created).toLocaleString();
+                const dur = r.duration_sec
+                    ? `${Math.floor(r.duration_sec / 60)}m ${Math.round(r.duration_sec % 60)}s`
+                    : '—';
                 return `
                     <tr>
-                        <td style="font-family:var(--mono);font-size:12px">${r.filename}</td>
+                        <td><strong>${r.participant_name}</strong><br><span style="color:var(--text-dim);font-size:12px">${r.participant_email}</span></td>
+                        <td>${r.session_name || '—'}</td>
+                        <td><span class="duration">${dur}</span></td>
                         <td><span class="file-size">${size}</span></td>
-                        <td style="color:var(--text-dim);font-size:13px">${date}</td>
+                        <td style="color:var(--text-dim);font-size:12px">${date}</td>
+                        <td>
+                            <a href="/api/recordings/${encodeURIComponent(r.filename)}/download" class="download-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Download
+                            </a>
+                        </td>
                     </tr>
                 `;
             }).join('');
         }
 
-        // Auto-refresh
+        // ── Auto-refresh ───────────────────────────────────
         setInterval(() => {
-            refreshActive(document.querySelector('.card:nth-child(2) .refresh-btn'));
-            refreshRecordings(document.querySelector('.card:nth-child(3) .refresh-btn'));
-        }, 10000);
+            refreshActive(null);
+            refreshRecordings(null);
+            refreshTokens(null);
+        }, 8000);
 
         // Initial load
-        refreshActive(document.querySelector('.card:nth-child(2) .refresh-btn'));
-        refreshRecordings(document.querySelector('.card:nth-child(3) .refresh-btn'));
+        refreshActive(null);
+        refreshRecordings(null);
+        refreshTokens(null);
     </script>
 </body>
 </html>

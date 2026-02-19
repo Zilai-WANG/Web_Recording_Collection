@@ -21,6 +21,8 @@
             --red-dim: rgba(240, 78, 94, 0.12);
             --amber: #f0a030;
             --amber-dim: rgba(240, 160, 48, 0.12);
+            --blue: #4ea4f0;
+            --blue-dim: rgba(78, 164, 240, 0.12);
             --font: 'DM Sans', -apple-system, sans-serif;
             --mono: 'JetBrains Mono', monospace;
         }
@@ -35,7 +37,6 @@
             justify-content: center;
         }
 
-        /* Radial glow behind card */
         body::before {
             content: '';
             position: fixed;
@@ -46,6 +47,7 @@
             height: 600px;
             background: radial-gradient(circle, rgba(34, 214, 122, 0.06) 0%, transparent 70%);
             pointer-events: none;
+            transition: background 0.5s;
         }
 
         .card {
@@ -87,8 +89,6 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: var(--green-dim);
-            border: 2px solid rgba(34, 214, 122, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -98,11 +98,9 @@
         .orb svg {
             width: 40px;
             height: 40px;
-            color: var(--green);
             transition: color 0.3s;
         }
 
-        /* Pulse rings for recording state */
         .orb-container .ring {
             position: absolute;
             inset: 0;
@@ -112,10 +110,7 @@
             pointer-events: none;
         }
 
-        .state-recording .ring {
-            animation: pulse-ring 2.4s ease-out infinite;
-        }
-
+        .state-recording .ring { animation: pulse-ring 2.4s ease-out infinite; }
         .ring:nth-child(2) { animation-delay: 0.8s; }
         .ring:nth-child(3) { animation-delay: 1.6s; }
 
@@ -124,7 +119,7 @@
             100% { transform: scale(1.8); opacity: 0; }
         }
 
-        /* Level meter bars */
+        /* Level meter */
         .level-meter {
             display: flex;
             justify-content: center;
@@ -143,7 +138,7 @@
             height: 4px;
         }
 
-        /* Status label */
+        /* Status */
         .status-pill {
             display: inline-flex;
             align-items: center;
@@ -164,25 +159,30 @@
         }
 
         /* States */
-        .state-idle .orb { background: rgba(122, 127, 146, 0.1); border-color: rgba(122, 127, 146, 0.2); }
+        .state-idle .orb { background: rgba(122, 127, 146, 0.1); border: 2px solid rgba(122, 127, 146, 0.2); }
         .state-idle .orb svg { color: var(--text-dim); }
         .state-idle .status-pill { background: rgba(122, 127, 146, 0.1); color: var(--text-dim); }
         .state-idle .status-dot { background: var(--text-dim); }
 
-        .state-recording .orb { background: var(--green-dim); border-color: rgba(34, 214, 122, 0.4); }
+        .state-recording .orb { background: var(--green-dim); border: 2px solid rgba(34, 214, 122, 0.4); }
         .state-recording .orb svg { color: var(--green); }
         .state-recording .status-pill { background: var(--green-dim); color: var(--green); }
         .state-recording .status-dot { background: var(--green); animation: blink 1.5s infinite; }
 
-        .state-error .orb { background: var(--red-dim); border-color: rgba(240, 78, 94, 0.3); }
+        .state-error .orb { background: var(--red-dim); border: 2px solid rgba(240, 78, 94, 0.3); }
         .state-error .orb svg { color: var(--red); }
         .state-error .status-pill { background: var(--red-dim); color: var(--red); }
         .state-error .status-dot { background: var(--red); }
 
-        .state-reconnecting .orb { background: var(--amber-dim); border-color: rgba(240, 160, 48, 0.3); }
+        .state-reconnecting .orb { background: var(--amber-dim); border: 2px solid rgba(240, 160, 48, 0.3); }
         .state-reconnecting .orb svg { color: var(--amber); }
         .state-reconnecting .status-pill { background: var(--amber-dim); color: var(--amber); }
         .state-reconnecting .status-dot { background: var(--amber); animation: blink 0.6s infinite; }
+
+        .state-submitted .orb { background: var(--blue-dim); border: 2px solid rgba(78, 164, 240, 0.3); }
+        .state-submitted .orb svg { color: var(--blue); }
+        .state-submitted .status-pill { background: var(--blue-dim); color: var(--blue); }
+        .state-submitted .status-dot { background: var(--blue); }
 
         @keyframes blink {
             0%, 100% { opacity: 1; }
@@ -211,33 +211,67 @@
             transition: all 0.2s;
         }
 
-        .btn-start {
-            background: var(--green);
-            color: #0b0d11;
-        }
-
+        .btn-start { background: var(--green); color: #0b0d11; }
         .btn-start:hover { filter: brightness(1.12); transform: translateY(-1px); }
 
-        .btn-stop {
-            background: var(--red);
-            color: #fff;
-        }
-
+        .btn-stop { background: var(--red); color: #fff; }
         .btn-stop:hover { filter: brightness(1.12); }
 
-        .btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none !important;
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+        .actions { display: flex; gap: 10px; justify-content: center; }
+
+        /* Completion card */
+        .completion {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--blue-dim);
+            border: 1px solid rgba(78, 164, 240, 0.2);
+            border-radius: 12px;
+            text-align: center;
         }
 
-        .actions {
+        .completion.show { display: block; }
+
+        .completion h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--blue);
+            margin-bottom: 6px;
+        }
+
+        .completion p {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .completion .stats {
             display: flex;
-            gap: 10px;
             justify-content: center;
+            gap: 24px;
+            margin-top: 14px;
         }
 
-        /* Footer note */
+        .completion .stat {
+            text-align: center;
+        }
+
+        .completion .stat-value {
+            font-family: var(--mono);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .completion .stat-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
         .note {
             margin-top: 28px;
             font-size: 12px;
@@ -248,6 +282,14 @@
         }
 
         .note strong { color: var(--text); font-weight: 600; }
+
+        @keyframes checkPop {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .check-icon { animation: checkPop 0.4s ease-out; }
     </style>
 </head>
 <body>
@@ -259,8 +301,8 @@
             <div class="ring"></div>
             <div class="ring"></div>
             <div class="ring"></div>
-            <div class="orb">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="orb" id="orbVisual">
+                <svg id="micIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                     <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                     <line x1="12" y1="19" x2="12" y2="23"/>
@@ -268,9 +310,7 @@
             </div>
         </div>
 
-        <div class="level-meter" id="levelMeter">
-            <!-- 16 bars -->
-        </div>
+        <div class="level-meter" id="levelMeter"></div>
 
         <div class="status-pill" id="statusPill">
             <span class="status-dot"></span>
@@ -279,31 +319,44 @@
 
         <div class="status-info" id="statusInfo">&nbsp;</div>
 
-        <div class="actions">
+        <div class="actions" id="actionsRow">
             <button class="btn btn-start" id="btnStart" onclick="startRecording()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
                 Start Recording
             </button>
             <button class="btn btn-stop" id="btnStop" onclick="stopRecording()" style="display:none">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
-                Stop
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+                Stop &amp; Submit
             </button>
         </div>
 
-        <div class="note">
+        <div class="completion" id="completion">
+            <h3>Recording Submitted</h3>
+            <p>Your audio has been uploaded successfully. You can close this tab now.</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="finalDuration">—</div>
+                    <div class="stat-label">Duration</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="finalChunks">—</div>
+                    <div class="stat-label">Chunks</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="note" id="noteSection">
             <strong>Tip:</strong> Keep this tab open while on your Zoom call.
             Only your microphone audio is captured — not system audio or other participants.
         </div>
     </div>
 
     <script>
-        // ── Config ──────────────────────────────────────────
         const TOKEN = "{{ token }}";
-        const CHUNK_INTERVAL_MS = 2000;  // send a chunk every 2 seconds
+        const CHUNK_INTERVAL_MS = 2000;
         const BAR_COUNT = 16;
         const WS_URL = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws/audio/${TOKEN}`;
 
-        // ── State ───────────────────────────────────────────
         let mediaStream = null;
         let audioContext = null;
         let analyser = null;
@@ -313,17 +366,18 @@
         let chunkCount = 0;
         let startTime = null;
         let reconnectAttempts = 0;
+        let timerInterval = null;
         const MAX_RECONNECT = 5;
 
-        // ── UI refs ─────────────────────────────────────────
         const orbContainer = document.getElementById('orbContainer');
+        const orbVisual = document.getElementById('orbVisual');
+        const micIcon = document.getElementById('micIcon');
         const statusText = document.getElementById('statusText');
         const statusInfo = document.getElementById('statusInfo');
         const btnStart = document.getElementById('btnStart');
         const btnStop = document.getElementById('btnStop');
         const levelMeter = document.getElementById('levelMeter');
 
-        // Build level bars
         for (let i = 0; i < BAR_COUNT; i++) {
             const bar = document.createElement('div');
             bar.className = 'level-bar';
@@ -331,23 +385,31 @@
         }
         const bars = levelMeter.querySelectorAll('.level-bar');
 
-        // ── UI state machine ────────────────────────────────
         function setState(state, info = '') {
             orbContainer.className = `orb-container state-${state}`;
-            const labels = { idle: 'Ready', recording: 'Recording', error: 'Error', reconnecting: 'Reconnecting…' };
+            const labels = {
+                idle: 'Ready',
+                recording: 'Recording',
+                error: 'Error',
+                reconnecting: 'Reconnecting\u2026',
+                submitted: 'Submitted'
+            };
             statusText.textContent = labels[state] || state;
             statusInfo.textContent = info || '\u00a0';
+        }
+
+        function formatDuration(seconds) {
+            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const s = String(seconds % 60).padStart(2, '0');
+            return `${m}:${s}`;
         }
 
         function updateTimer() {
             if (!isRecording || !startTime) return;
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
-            const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
-            const s = String(elapsed % 60).padStart(2, '0');
-            statusInfo.textContent = `${m}:${s}  ·  ${chunkCount} chunks uploaded`;
+            statusInfo.textContent = `${formatDuration(elapsed)}  \u00b7  ${chunkCount} chunks uploaded`;
         }
 
-        // ── Audio Level Visualization ───────────────────────
         function startLevelViz() {
             if (!analyser) return;
             const data = new Uint8Array(analyser.frequencyBinCount);
@@ -370,37 +432,19 @@
             draw();
         }
 
-        // ── WebSocket ───────────────────────────────────────
         function connectWS() {
             return new Promise((resolve, reject) => {
                 ws = new WebSocket(WS_URL);
                 ws.binaryType = 'arraybuffer';
-
-                ws.onopen = () => {
-                    reconnectAttempts = 0;
-                    resolve();
-                };
-
+                ws.onopen = () => { reconnectAttempts = 0; resolve(); };
                 ws.onmessage = (e) => {
-                    // ACK from server
                     try {
                         const msg = JSON.parse(e.data);
-                        if (msg.type === 'ack') {
-                            chunkCount = msg.chunks;
-                        }
+                        if (msg.type === 'ack') chunkCount = msg.chunks;
                     } catch (_) {}
                 };
-
-                ws.onerror = (err) => {
-                    console.error('WS error', err);
-                    reject(err);
-                };
-
-                ws.onclose = () => {
-                    if (isRecording) {
-                        tryReconnect();
-                    }
-                };
+                ws.onerror = (err) => { console.error('WS error', err); reject(err); };
+                ws.onclose = () => { if (isRecording) tryReconnect(); };
             });
         }
 
@@ -421,10 +465,8 @@
             }
         }
 
-        // ── Recording ───────────────────────────────────────
         async function startRecording() {
             try {
-                // 1. Get microphone
                 mediaStream = await navigator.mediaDevices.getUserMedia({
                     audio: {
                         echoCancellation: true,
@@ -434,7 +476,6 @@
                     }
                 });
 
-                // 2. Set up AudioContext for raw PCM + visualization
                 audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 48000 });
                 const source = audioContext.createMediaStreamSource(mediaStream);
 
@@ -442,7 +483,6 @@
                 analyser.fftSize = 256;
                 source.connect(analyser);
 
-                // ScriptProcessor to get raw PCM chunks
                 const bufferSize = 4096;
                 scriptProcessor = audioContext.createScriptProcessor(bufferSize, 1, 1);
                 let pcmBuffer = [];
@@ -450,7 +490,6 @@
                 scriptProcessor.onaudioprocess = (e) => {
                     if (!isRecording) return;
                     const float32 = e.inputBuffer.getChannelData(0);
-                    // Convert Float32 → Int16 PCM
                     const int16 = new Int16Array(float32.length);
                     for (let i = 0; i < float32.length; i++) {
                         const s = Math.max(-1, Math.min(1, float32[i]));
@@ -462,10 +501,8 @@
                 source.connect(scriptProcessor);
                 scriptProcessor.connect(audioContext.destination);
 
-                // 3. Connect WebSocket
                 await connectWS();
 
-                // 4. Start sending chunks at interval
                 isRecording = true;
                 startTime = Date.now();
                 chunkCount = 0;
@@ -475,16 +512,11 @@
                 btnStart.style.display = 'none';
                 btnStop.style.display = 'inline-flex';
 
-                // Chunk sender
                 const sendInterval = setInterval(() => {
-                    if (!isRecording) {
-                        clearInterval(sendInterval);
-                        return;
-                    }
+                    if (!isRecording) { clearInterval(sendInterval); return; }
                     if (pcmBuffer.length === 0) return;
                     if (!ws || ws.readyState !== WebSocket.OPEN) return;
 
-                    // Merge buffers
                     const totalLen = pcmBuffer.reduce((sum, buf) => sum + buf.byteLength, 0);
                     const merged = new Uint8Array(totalLen);
                     let offset = 0;
@@ -493,14 +525,12 @@
                         offset += buf.byteLength;
                     }
                     pcmBuffer = [];
-
                     ws.send(merged.buffer);
                     chunkCount++;
                     updateTimer();
                 }, CHUNK_INTERVAL_MS);
 
-                // Timer update
-                setInterval(updateTimer, 1000);
+                timerInterval = setInterval(updateTimer, 1000);
 
             } catch (err) {
                 console.error('Start error:', err);
@@ -513,21 +543,32 @@
         }
 
         function stopRecording() {
+            const elapsed = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
             isRecording = false;
+            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 
             if (scriptProcessor) { scriptProcessor.disconnect(); scriptProcessor = null; }
             if (audioContext) { audioContext.close(); audioContext = null; }
             if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
             if (ws && ws.readyState === WebSocket.OPEN) { ws.close(); }
 
-            setState('idle', `Session ended · ${chunkCount} chunks saved`);
-            btnStart.style.display = 'inline-flex';
-            btnStart.disabled = true;
-            btnStart.textContent = 'Session Ended';
+            // Switch to submitted state
+            setState('submitted');
+            statusInfo.textContent = '';
+            levelMeter.style.display = 'none';
             btnStop.style.display = 'none';
+            btnStart.style.display = 'none';
+
+            // Show checkmark in orb
+            micIcon.outerHTML = `<svg class="check-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+            // Show completion card
+            document.getElementById('finalDuration').textContent = formatDuration(elapsed);
+            document.getElementById('finalChunks').textContent = chunkCount;
+            document.getElementById('completion').classList.add('show');
+            document.getElementById('noteSection').innerHTML = '<strong>All done!</strong> Your recording has been submitted. You can safely close this tab.';
         }
 
-        // Warn on tab close
         window.addEventListener('beforeunload', (e) => {
             if (isRecording) {
                 e.preventDefault();

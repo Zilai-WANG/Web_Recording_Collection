@@ -1,0 +1,13 @@
+{
+  "token": "4186779e825541d1",
+  "email": "19080007d@gmail.com",
+  "name": "cooper",
+  "session_name": "Recording Session",
+  "created_at": "2026-02-19T00:20:57.099860+00:00",
+  "expires_at": "2026-02-20T00:20:57.099860+00:00",
+  "status": "completed",
+  "recording_file": "Recording_Session_cooper_20260219_002116.wav",
+  "recording_size": 188460,
+  "recording_duration_sec": 2.5,
+  "email_sent": true
+}
