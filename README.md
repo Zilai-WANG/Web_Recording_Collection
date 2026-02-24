@@ -216,3 +216,13 @@ zoom-audio-capture/
 - Participants should keep the recording tab open (not closed) during the Zoom call
 - The server must be running for the entire duration of the recording session
 - HTTPS is required in production for `getUserMedia` to work (`localhost` is exempt)
+
+---
+
+## License & Copyright
+
+© 2025 UCLA Health. All rights reserved.
+
+This software was developed for UCLA Health data collection purposes. Unauthorized use, reproduction, or distribution of this application or any portion of it is strictly prohibited without prior written consent from UCLA Health.
+
+For questions or permissions, contact UCLA Health.
