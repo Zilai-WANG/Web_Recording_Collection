@@ -1,4 +1,4 @@
-# Zoom Audio Capture
+# Online Audio Capture
 
 A lightweight, browser-based web application for real-time audio capture during Zoom meetings. Participants join via unique email links and record their microphone audio directly in the browser using WebRTC, while simultaneously participating in a Zoom call.
 
@@ -197,7 +197,7 @@ curl -X POST http://localhost:8000/api/invite \
 ## Project Structure
 
 ```
-zoom-audio-capture/
+online-audio-capture/
 ├── server.py              # FastAPI backend
 ├── requirements.txt       # Python dependencies
 ├── templates/
